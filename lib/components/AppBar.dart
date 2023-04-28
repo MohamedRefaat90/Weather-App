@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:weather/Controller/myController.dart';
+
+import '../pages/searchPage.dart';
 
 AppBar myAppbar(BuildContext context) {
+
   return AppBar(
     backgroundColor: Colors.transparent,
     elevation: 0,
     leading: IconButton(
-        icon: const Icon(Icons.sort_outlined, size: 30, color: Colors.black),
-        onPressed: () {}),
+        icon: const Icon(Icons.my_location, size: 30, color: Colors.black),
+        onPressed: () {
+          Provider.of<MyController>(context, listen: false).getLiveLocationWeather();
+
+        }),
     actions: [
       IconButton(
           onPressed: () {
@@ -26,44 +34,4 @@ AppBar myAppbar(BuildContext context) {
         const Text('Weather Forecast', style: TextStyle(color: Colors.black)),
     centerTitle: true,
   );
-}
-
-class SerachPage extends StatelessWidget {
-  const SerachPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController txtcontroller = TextEditingController();
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Center(
-          child: Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: TextField(
-                  controller: txtcontroller,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                      hintText: 'Enter a City',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)))),
-                ),
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

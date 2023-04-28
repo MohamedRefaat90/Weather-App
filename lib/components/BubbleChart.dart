@@ -1,40 +1,63 @@
-import 'package:charts_painter/chart.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:weather/Models/Colors.dart';
 
 import '../Controller/myController.dart';
+import '../Models/weeklyTemp.dart';
 
-class BubbleChart extends StatelessWidget {
+class BubbleChart extends StatefulWidget {
+  @override
+  State<BubbleChart> createState() => _BubbleChartState();
+}
+
+class _BubbleChartState extends State<BubbleChart> {
   @override
   Widget build(BuildContext context) {
-    MyController controller = Provider.of<MyController>(context, listen: true);
-    return Chart(
-        height: 100,
-        state: ChartState(
-            behaviour: ChartBehaviour(
-              onItemClicked: (value) {
-                controller.changeBubbleColor(value.itemIndex);
-              },
-            ),
-            backgroundDecorations: [
-              SparkLineDecoration(lineColor: const Color(0xffC0C6C9))
-            ],
-            data: ChartData([
-              [6, 8, 4, 8, 7]
-                  .map((e) => ChartItem<void>(e.toDouble()))
-                  .toList(),
-            ]),
-            itemOptions: BubbleItemOptions(
-              maxBarWidth: 17,
-              bubbleItemBuilder: (p0) {
-                return BubbleItem(
-                    color: Colors.white,
-                    border: BorderSide(
-                        width: 7,
-                        color: p0.itemIndex == controller.selectedBubble
-                            ? const Color(0xff725986)
-                            : const Color(0xffC0C6C9)));
-              },
-            )));
+    List? tmps = Provider.of<MyController>(context).weatherData!.tmpMax;
+    List? days = Provider.of<MyController>(context).weatherData!.week;
+    // MyController controller = Provider.of<MyController>(context);
+    TooltipBehavior tooltipBehavior =
+        TooltipBehavior(enable: true, duration: 1500);
+
+    List<DailyTmp> weeklyTmps = getDaysTmp(days, tmps);
+
+    return SfCartesianChart(
+      enableAxisAnimation: true,
+      tooltipBehavior: tooltipBehavior,
+      plotAreaBorderWidth: 0,
+      series: <SplineSeries>[
+        SplineSeries<DailyTmp, dynamic>(
+          name: 'Temperature',
+          dataSource: weeklyTmps,
+          xValueMapper: (DailyTmp data, _) => data.day,
+          yValueMapper: (DailyTmp data, _) => data.tmp,
+          dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              labelAlignment: ChartDataLabelAlignment.middle,
+              textStyle:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          enableTooltip: true,
+          color: const Color(0xffC0C6C9),
+          markerSettings: MarkerSettings(
+            isVisible: true,
+            borderColor: orange,
+            width: 30,
+            height: 30,
+            borderWidth: 5,
+          ),
+        )
+      ],
+      primaryXAxis: CategoryAxis(
+        isVisible: false,
+      ),
+      primaryYAxis: NumericAxis(
+          isVisible: false,
+          labelFormat: '{value}c',
+          labelAlignment: LabelAlignment.center),
+    );
   }
 }
