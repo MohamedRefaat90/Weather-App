@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weather/Controller/myController.dart';
 import 'package:weather/pages/Home.dart';
+import 'package:flutter/widgets.dart' hide SelectionDetails;
 
 void main() {
   runApp(const WeatherApp());
