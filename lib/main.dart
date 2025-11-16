@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weather/Controller/myController.dart';
-import 'package:weather/pages/Home.dart';
-import 'package:flutter/widgets.dart' hide SelectionDetails;
 
-void main() {
+import 'core/di/dependency_injection.dart';
+import 'core/theme/app_theme.dart';
+import 'features/weather/presentation/pages/home_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize dependencies
+  await DependencyInjection.init();
+
   runApp(const WeatherApp());
 }
 
 class WeatherApp extends StatelessWidget {
-  const WeatherApp({Key? key}) : super(key: key);
+  const WeatherApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyController(),
-      child: const MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+            value: DependencyInjection.weatherProvider),
+        ChangeNotifierProvider.value(
+            value: DependencyInjection.locationProvider),
+        ChangeNotifierProvider.value(
+            value: DependencyInjection.favoritesProvider),
+      ],
+      child: MaterialApp(
+        title: 'Weather App',
         debugShowCheckedModeBanner: false,
-        home: HomePage(),
-        // home: Testing(),
+        theme: AppTheme.lightTheme,
+        home: const HomePage(),
       ),
     );
   }
