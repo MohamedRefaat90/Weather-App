@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:weather/core/theme/app_theme.dart';
+import 'package:weather/core/utils/helpers.dart';
+
 import '../../domain/entities/weather.dart';
 import 'glass_widgets.dart';
+
+class DateTimeHelper {
+  static String formatTime(DateTime dateTime) {
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+}
 
 class WeatherDetailsCard extends StatelessWidget {
   final Weather weather;
@@ -14,6 +24,9 @@ class WeatherDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final isDaytime = DateTime.now().isAfter(weather.sunrise) &&
+    //     DateTime.now().isBefore(weather.sunset);
+    final accentColor = Colors.white;
     return GlassCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -30,6 +43,7 @@ class WeatherDetailsCard extends StatelessWidget {
             label: 'Wind Speed',
             value: '${weather.windSpeed.toStringAsFixed(1)} km/h',
             delay: 100,
+            accentColor: accentColor,
           ),
           const SizedBox(height: 12),
           _buildDetailRow(
@@ -38,6 +52,7 @@ class WeatherDetailsCard extends StatelessWidget {
             label: 'Humidity',
             value: '${weather.humidity.round()}%',
             delay: 200,
+            accentColor: accentColor,
           ),
           const SizedBox(height: 12),
           _buildDetailRow(
@@ -46,6 +61,7 @@ class WeatherDetailsCard extends StatelessWidget {
             label: 'Visibility',
             value: '${(weather.visibility / 1000).toStringAsFixed(1)} km',
             delay: 300,
+            accentColor: accentColor,
           ),
           const SizedBox(height: 12),
           _buildDetailRow(
@@ -54,6 +70,7 @@ class WeatherDetailsCard extends StatelessWidget {
             label: 'UV Index',
             value: weather.uvIndex.toStringAsFixed(1),
             delay: 400,
+            accentColor: accentColor,
           ),
           const SizedBox(height: 12),
           _buildDetailRow(
@@ -62,6 +79,7 @@ class WeatherDetailsCard extends StatelessWidget {
             label: 'Sunrise',
             value: DateTimeHelper.formatTime(weather.sunrise),
             delay: 500,
+            accentColor: accentColor,
           ),
           const SizedBox(height: 12),
           _buildDetailRow(
@@ -70,6 +88,7 @@ class WeatherDetailsCard extends StatelessWidget {
             label: 'Sunset',
             value: DateTimeHelper.formatTime(weather.sunset),
             delay: 600,
+            accentColor: accentColor,
           ),
         ],
       ),
@@ -82,18 +101,19 @@ class WeatherDetailsCard extends StatelessWidget {
     required String label,
     required String value,
     required int delay,
+    required Color accentColor,
   }) {
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: accentColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
             icon,
-            color: Theme.of(context).colorScheme.primary,
+            color: accentColor,
             size: 24,
           ),
         ),
@@ -114,13 +134,5 @@ class WeatherDetailsCard extends StatelessWidget {
         ),
       ],
     ).animate().fadeIn(delay: delay.ms).slideX(begin: 0.2, end: 0);
-  }
-}
-
-class DateTimeHelper {
-  static String formatTime(DateTime dateTime) {
-    final hour = dateTime.hour.toString().padLeft(2, '0');
-    final minute = dateTime.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
   }
 }

@@ -4,11 +4,14 @@ import 'package:provider/provider.dart';
 
 import '../providers/weather_provider.dart';
 import '../widgets/daily_forecast_section.dart';
+import '../widgets/debug_controls.dart';
 import '../widgets/glass_widgets.dart';
 import '../widgets/hourly_forecast_list.dart';
+import '../widgets/search_overlay.dart';
+import '../widgets/weather_background.dart';
 import '../widgets/weather_card.dart';
 import '../widgets/weather_details_card.dart';
-import '../widgets/weather_search.dart';
+import '../widgets/weather_overlay.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,13 +21,36 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Debug mode for testing gradients
+  bool _debugMode = false;
+  int _debugWeatherCode = 0;
+  bool _debugIsDaytime = true;
+  bool _showSearchOverlay = false;
+
+  // Weather codes for testing: Clear, Partly Cloudy, Cloudy, Rain, Snow, Thunderstorm
+  final List<Map<String, dynamic>> _debugWeatherCodes = [
+    {'code': 0, 'name': 'Clear (Day)', 'isDaytime': true},
+    {'code': 0, 'name': 'Clear (Night)', 'isDaytime': false},
+    {'code': 2, 'name': 'Partly Cloudy (Day)', 'isDaytime': true},
+    {'code': 2, 'name': 'Partly Cloudy (Night)', 'isDaytime': false},
+    {'code': 3, 'name': 'Cloudy (Day)', 'isDaytime': true},
+    {'code': 3, 'name': 'Cloudy (Night)', 'isDaytime': false},
+    {'code': 61, 'name': 'Rain (Day)', 'isDaytime': true},
+    {'code': 61, 'name': 'Rain (Night)', 'isDaytime': false},
+    {'code': 71, 'name': 'Snow (Day)', 'isDaytime': true},
+    {'code': 71, 'name': 'Snow (Night)', 'isDaytime': false},
+    {'code': 95, 'name': 'Thunderstorm (Day)', 'isDaytime': true},
+    {'code': 95, 'name': 'Thunderstorm (Night)', 'isDaytime': false},
+  ];
+  int _currentDebugIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar:
           Provider.of<WeatherProvider>(context, listen: true).state.status ==
-                  WeatherStatus.loading
+                  WeatherStatus.success
               ? AppBar(
                   elevation: 0,
                   backgroundColor: Colors.transparent,
@@ -41,10 +67,9 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       icon: const Icon(Icons.search),
                       onPressed: () {
-                        showSearch(
-                          context: context,
-                          delegate: WeatherSearchDelegate(),
-                        );
+                        setState(() {
+                          _showSearchOverlay = true;
+                        });
                       },
                       tooltip: 'Search location',
                     ),
@@ -56,35 +81,88 @@ class _HomePageState extends State<HomePage> {
                       },
                       tooltip: 'Refresh',
                     ),
+                    IconButton(
+                      icon: Icon(_debugMode
+                          ? Icons.bug_report
+                          : Icons.bug_report_outlined),
+                      onPressed: () {
+                        setState(() {
+                          _debugMode = !_debugMode;
+                        });
+                      },
+                      tooltip: 'Toggle Debug Mode',
+                    ),
                   ],
                 )
               : null,
-      body: Consumer<WeatherProvider>(
-        builder: (context, weatherProvider, _) {
-          final state = weatherProvider.state;
+      body: Stack(
+        children: [
+          // Main content
+          Consumer<WeatherProvider>(
+            builder: (context, weatherProvider, _) {
+              final state = weatherProvider.state;
 
-          // Determine background gradient
+              return state.weather != null
+                  ? Stack(
+                      children: [
+                        // Background gradient
+                        WeatherBackground(
+                          weatherCode: _debugMode
+                              ? _debugWeatherCode
+                              : state.weather!.weatherCode,
+                          isDaytime: _debugMode
+                              ? _debugIsDaytime
+                              : _isDaytime(state.weather!.sunrise,
+                                  state.weather!.sunset),
+                          child: SafeArea(
+                            child: _buildBody(weatherProvider),
+                          ),
+                        ),
 
-          final backgroundGradient = state.weather != null
-              ? _getWeatherGradient(
-                  state.weather!.weatherCode,
-                  _isDaytime(state.weather!.sunrise, state.weather!.sunset),
-                )
-              : _getDefaultGradient();
+                        // Weather overlays (rain/snow)
+                        WeatherOverlay(
+                          weatherCode: _debugMode
+                              ? _debugWeatherCode
+                              : state.weather!.weatherCode,
+                        ),
+                      ],
+                    )
+                  : Center(
+                      child: Lottie.asset("assets/loader.json",
+                          frameRate: FrameRate(60)),
+                    );
+            },
+          ),
 
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: backgroundGradient,
+          // Search overlay
+          if (_showSearchOverlay)
+            SearchOverlay(
+              onClose: () {
+                setState(() {
+                  _showSearchOverlay = false;
+                });
+              },
+            ),
+
+          // Debug controls
+          if (_debugMode)
+            Positioned(
+              bottom: 80,
+              right: 16,
+              left: 16,
+              child: DebugControls(
+                debugMode: _debugMode,
+                currentDebugIndex: _currentDebugIndex,
+                debugWeatherCodes: _debugWeatherCodes,
+                onToggleDebug: () {
+                  setState(() {
+                    _debugMode = !_debugMode;
+                  });
+                },
+                onCycleWeather: _cycleDebugWeather,
               ),
             ),
-            child: SafeArea(
-              child: _buildBody(weatherProvider),
-            ),
-          );
-        },
+        ],
       ),
     );
   }
@@ -155,15 +233,6 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    if (state.weather == null) {
-      return const Center(
-        child: Text(
-          'No weather data available',
-          style: TextStyle(color: Colors.white),
-        ),
-      );
-    }
-
     final weather = state.weather!;
     final isDaytime = _isDaytime(weather.sunrise, weather.sunset);
 
@@ -182,6 +251,8 @@ class _HomePageState extends State<HomePage> {
                 WeatherCard(
                   weather: weather,
                   isDaytime: isDaytime,
+                  debugWeatherCode: _debugMode ? _debugWeatherCode : null,
+                  debugIsDaytime: _debugMode ? _debugIsDaytime : null,
                 ),
 
                 // Weather Details Card
@@ -208,75 +279,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<Color> _getDefaultGradient() {
-    return const [
-      Color(0xFF4A90E2),
-      Color(0xFF50C9C3),
-    ];
-  }
-
-  List<Color> _getWeatherGradient(int weatherCode, bool isDaytime) {
-    if (!isDaytime) {
-      return [
-        const Color(0xFF0F2027),
-        const Color(0xFF203A43),
-        const Color(0xFF2C5364),
-      ];
-    }
-
-    // Clear/Sunny
-    if (weatherCode >= 0 && weatherCode <= 1) {
-      return [
-        const Color(0xFF56CCF2),
-        const Color(0xFF2F80ED),
-      ];
-    }
-
-    // Partly Cloudy
-    if (weatherCode == 2) {
-      return [
-        const Color(0xFF89ABE3),
-        const Color(0xFFEA738D),
-      ];
-    }
-
-    // Cloudy/Overcast
-    if (weatherCode == 3) {
-      return [
-        const Color(0xFF757F9A),
-        const Color(0xFFD7DDE8),
-      ];
-    }
-
-    // Rain
-    if (weatherCode >= 51 && weatherCode <= 67) {
-      return [
-        const Color(0xFF4B79A1),
-        const Color(0xFF283E51),
-      ];
-    }
-
-    // Snow
-    if (weatherCode >= 71 && weatherCode <= 77) {
-      return [
-        const Color(0xFFE0EAFC),
-        const Color(0xFFCFDEF3),
-      ];
-    }
-
-    // Thunderstorm
-    if (weatherCode >= 95) {
-      return [
-        const Color(0xFF2C3E50),
-        const Color(0xFF4CA1AF),
-      ];
-    }
-
-    // Default
-    return [
-      const Color(0xFF4A90E2),
-      const Color(0xFF50C9C3),
-    ];
+  void _cycleDebugWeather() {
+    setState(() {
+      _currentDebugIndex = (_currentDebugIndex + 1) % _debugWeatherCodes.length;
+      _debugWeatherCode = _debugWeatherCodes[_currentDebugIndex]['code'];
+      _debugIsDaytime = _debugWeatherCodes[_currentDebugIndex]['isDaytime'];
+    });
   }
 
   bool _isDaytime(DateTime sunrise, DateTime sunset) {
