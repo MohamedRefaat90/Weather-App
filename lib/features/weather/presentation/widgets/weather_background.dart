@@ -30,25 +30,25 @@ class WeatherBackground extends StatelessWidget {
   List<Color> _getWeatherGradient(int weatherCode, bool isDaytime) {
     if (!isDaytime) {
       return const [
-        Color(0xFF0F2027),
-        Color(0xFF203A43),
-        Color(0xFF2C5364),
+        Color(0xFF141E30), // Dark Blue
+        Color(0xFF243B55), // Deep Teal
       ];
     }
 
     // Clear/Sunny
     if (weatherCode >= 0 && weatherCode <= 1) {
       return const [
-        Color(0xFF56CCF2),
-        Color(0xFF2F80ED),
+        Color.fromARGB(255, 79, 172, 254), // Bright Blue
+        Color.fromARGB(255, 0, 241, 254), // Bright Cyan
+        Color.fromARGB(255, 226, 226, 226), // White hint at bottom
       ];
     }
 
     // Partly Cloudy
     if (weatherCode == 2) {
       return const [
-        Color(0xFF89ABE3),
-        Color(0xFFEA738D),
+        Color(0xFF56CCF2),
+        Color(0xFF2F80ED),
       ];
     }
 
@@ -56,31 +56,31 @@ class WeatherBackground extends StatelessWidget {
     if (weatherCode == 3) {
       return const [
         Color(0xFF757F9A),
-        Color.fromARGB(255, 187, 194, 205),
+        Color(0xFFD7DDE8),
       ];
     }
 
     // Rain
     if (weatherCode >= 51 && weatherCode <= 67) {
       return const [
-        Color(0xFF4B79A1),
-        Color(0xFF283E51),
+        Color(0xFF373B44),
+        Color(0xFF4286f4),
       ];
     }
 
     // Snow
     if (weatherCode >= 71 && weatherCode <= 77) {
       return const [
-        Color.fromARGB(255, 149, 185, 239),
-        Color.fromARGB(255, 206, 210, 211),
+        Color(0xFFE6DADA),
+        Color(0xFF274046),
       ];
     }
 
     // Thunderstorm
     if (weatherCode >= 95) {
       return const [
-        Color(0xFF2C3E50),
-        Color(0xFF4CA1AF),
+        Color(0xFF000000),
+        Color(0xFF434343),
       ];
     }
 

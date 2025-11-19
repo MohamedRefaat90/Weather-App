@@ -36,10 +36,19 @@ class WeatherCard extends StatelessWidget {
     final subtextColor =
         isSnowy ? Colors.black54 : Colors.white.withOpacity(0.9);
 
+    // Apply opacity to gradient colors for glass effect
+    final glassGradientColors = gradientColors.map((color) {
+      if (weather.weatherCode == 3) {
+        return color.withAlpha(128);
+      } else {
+        return color.withAlpha(255);
+      }
+    }).toList();
+
     return Hero(
       tag: 'weather-card',
-      child: GradientCard(
-        gradientColors: gradientColors,
+      child: GlassCard(
+        gradientColors: glassGradientColors,
         margin: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -48,7 +57,7 @@ class WeatherCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.location_on, color: textColor, size: 20),
+                Icon(Icons.location_on, color: textColor, size: 24),
                 const SizedBox(width: 8),
                 Flexible(
                   child: Text(
@@ -56,6 +65,7 @@ class WeatherCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           color: textColor,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
                         ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -70,6 +80,8 @@ class WeatherCard extends StatelessWidget {
               weather.country,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: subtextColor,
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.w500,
                   ),
             ).animate().fadeIn(delay: 200.ms),
 
@@ -77,7 +89,7 @@ class WeatherCard extends StatelessWidget {
 
             // Weather animation
             SizedBox(
-              height: 150,
+              height: 180, // Increased size
               child: Lottie.asset(
                 WeatherHelper.getWeatherAnimation(
                   debugWeatherCode ?? weather.weatherCode,
@@ -93,11 +105,18 @@ class WeatherCard extends StatelessWidget {
             Text(
               '${weather.temperature.round()}°',
               style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 72,
-                    height: 1,
+                color: textColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 100, // Increased font size
+                height: 1,
+                shadows: [
+                  Shadow(
+                    offset: const Offset(0, 4),
+                    blurRadius: 10,
+                    color: Colors.black.withOpacity(0.2),
                   ),
+                ],
+              ),
             ).animate().fadeIn(delay: 400.ms).scale(duration: 400.ms),
 
             const SizedBox(height: 8),
@@ -105,31 +124,46 @@ class WeatherCard extends StatelessWidget {
             // Weather description
             Text(
               WeatherCodeDescriptions.getDescription(weather.weatherCode),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: subtextColor,
+                    fontWeight: FontWeight.w500,
                   ),
             ).animate().fadeIn(delay: 500.ms),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
             // Min/Max temperature
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TemperatureBadge(
-                  label: 'Max',
-                  temperature: weather.dailyForecast.first.maxTemperature,
-                  icon: Icons.arrow_upward,
-                  isSnowy: isSnowy,
-                ),
-                const SizedBox(width: 16),
-                TemperatureBadge(
-                  label: 'Min',
-                  temperature: weather.dailyForecast.first.minTemperature,
-                  icon: Icons.arrow_downward,
-                  isSnowy: isSnowy,
-                ),
-              ],
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: Colors.white.withOpacity(0.2)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TemperatureBadge(
+                    label: 'Max',
+                    temperature: weather.dailyForecast.first.maxTemperature,
+                    icon: Icons.arrow_upward,
+                    isSnowy: isSnowy,
+                  ),
+                  Container(
+                    height: 24,
+                    width: 1,
+                    color: Colors.white.withOpacity(0.3),
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  TemperatureBadge(
+                    label: 'Min',
+                    temperature: weather.dailyForecast.first.minTemperature,
+                    icon: Icons.arrow_downward,
+                    isSnowy: isSnowy,
+                  ),
+                ],
+              ),
             ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2, end: 0),
           ],
         ),

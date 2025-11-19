@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -81,17 +82,18 @@ class _HomePageState extends State<HomePage> {
                       },
                       tooltip: 'Refresh',
                     ),
-                    IconButton(
-                      icon: Icon(_debugMode
-                          ? Icons.bug_report
-                          : Icons.bug_report_outlined),
-                      onPressed: () {
-                        setState(() {
-                          _debugMode = !_debugMode;
-                        });
-                      },
-                      tooltip: 'Toggle Debug Mode',
-                    ),
+                    if (kDebugMode)
+                      IconButton(
+                        icon: Icon(_debugMode
+                            ? Icons.bug_report
+                            : Icons.bug_report_outlined),
+                        onPressed: () {
+                          setState(() {
+                            _debugMode = !_debugMode;
+                          });
+                        },
+                        tooltip: 'Toggle Debug Mode',
+                      ),
                   ],
                 )
               : null,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:weather/core/theme/app_theme.dart';
-import 'package:weather/core/utils/helpers.dart';
 
 import '../../domain/entities/weather.dart';
 import 'glass_widgets.dart';
@@ -29,12 +27,18 @@ class WeatherDetailsCard extends StatelessWidget {
     final accentColor = Colors.white;
     return GlassCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      gradientColors: [
+        Colors.white.withOpacity(0.15),
+        Colors.white.withOpacity(0.05),
+      ],
       child: Column(
         children: [
           Text(
             'Weather Details',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold, color: AppColors.backgroundLight),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 16),
           _buildDetailRow(
@@ -124,13 +128,15 @@ class WeatherDetailsCard extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
-                .copyWith(color: AppColors.backgroundLight),
+                .copyWith(color: Colors.white.withOpacity(0.9)),
           ),
         ),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold, color: AppColors.backgroundLight),
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ],
     ).animate().fadeIn(delay: delay.ms).slideX(begin: 0.2, end: 0);

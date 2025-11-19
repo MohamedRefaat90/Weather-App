@@ -20,42 +20,29 @@ class TemperatureBadge extends StatelessWidget {
     final badgeTextColor = isSnowy ? Colors.black87 : Colors.white;
     final badgeSubtextColor =
         isSnowy ? Colors.black54 : Colors.white.withOpacity(0.9);
-    final badgeBgColor =
-        isSnowy ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(0.2);
-    final badgeBorderColor =
-        isSnowy ? Colors.black.withOpacity(0.2) : Colors.white.withOpacity(0.3);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: badgeBgColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: badgeBorderColor,
-          width: 1,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: badgeTextColor, size: 18),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: badgeSubtextColor,
+                fontWeight: FontWeight.w500,
+              ),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: badgeTextColor, size: 16),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: badgeSubtextColor,
-                ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '${temperature.round()}°',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: badgeTextColor,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ],
-      ),
+        const SizedBox(width: 8),
+        Text(
+          '${temperature.round()}°',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: badgeTextColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+        ),
+      ],
     );
   }
 }

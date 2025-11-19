@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
-import 'package:weather/core/theme/app_theme.dart';
-import '../../domain/entities/weather.dart';
+
 import '../../../../core/utils/helpers.dart';
+import '../../domain/entities/weather.dart';
 import 'glass_widgets.dart';
 
 class HourlyForecastList extends StatelessWidget {
@@ -25,8 +25,10 @@ class HourlyForecastList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             'Hourly Forecast',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold, color: AppColors.backgroundLight),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
         SizedBox(
@@ -70,20 +72,21 @@ class _HourlyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Glass effect gradient
     final gradientColors = isCurrentHour
         ? [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.secondary,
+            Colors.white.withOpacity(0.3),
+            Colors.white.withOpacity(0.2),
           ]
         : [
-            Theme.of(context).colorScheme.surface,
-            Theme.of(context).colorScheme.surface,
+            Colors.white.withOpacity(0.15),
+            Colors.white.withOpacity(0.05),
           ];
 
     return Container(
       width: 80,
       margin: const EdgeInsets.only(right: 12),
-      child: GradientCard(
+      child: GlassCard(
         gradientColors: gradientColors,
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -92,8 +95,9 @@ class _HourlyCard extends StatelessWidget {
             Text(
               isCurrentHour ? "Now" : DateTimeHelper.formatHour(hourly.time),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: isCurrentHour ? Colors.white : null,
-                    fontWeight: isCurrentHour ? FontWeight.bold : null,
+                    color: Colors.white,
+                    fontWeight:
+                        isCurrentHour ? FontWeight.bold : FontWeight.w500,
                   ),
             ),
             SizedBox(
@@ -107,7 +111,7 @@ class _HourlyCard extends StatelessWidget {
             Text(
               '${hourly.temperature.round()}°',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: isCurrentHour ? Colors.white : null,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -118,17 +122,13 @@ class _HourlyCard extends StatelessWidget {
                   Icon(
                     Icons.water_drop,
                     size: 12,
-                    color: isCurrentHour
-                        ? Colors.white.withOpacity(0.8)
-                        : Theme.of(context).colorScheme.primary,
+                    color: Colors.white.withOpacity(0.9),
                   ),
                   const SizedBox(width: 2),
                   Text(
                     '${hourly.precipitation.round()}%',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isCurrentHour
-                              ? Colors.white.withOpacity(0.8)
-                              : null,
+                          color: Colors.white.withOpacity(0.9),
                           fontSize: 10,
                         ),
                   ),

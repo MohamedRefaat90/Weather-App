@@ -17,11 +17,15 @@ class DailyForecastChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Colors.white.withOpacity(0.9);
+    final textColor = Colors.white;
 
     return GlassCard(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
+      gradientColors: [
+        Colors.white.withOpacity(0.3),
+        Colors.white.withOpacity(0.1),
+      ],
       child: SizedBox(
         height: 250,
         child: LineChart(
@@ -61,6 +65,8 @@ class DailyForecastChart extends StatelessWidget {
                 },
               ),
             ),
+            baselineX: 2,
+            baselineY: 2,
             gridData: FlGridData(
               show: true,
               drawVerticalLine: false,
@@ -81,7 +87,7 @@ class DailyForecastChart extends StatelessWidget {
                     return Text(
                       '${value.toInt()}°',
                       style: TextStyle(
-                        color: textColor.withOpacity(0.6),
+                        color: textColor.withOpacity(0.9),
                         fontSize: 12,
                       ),
                     );
@@ -91,16 +97,19 @@ class DailyForecastChart extends StatelessWidget {
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  reservedSize: 30,
+                  reservedSize: 40,
                   getTitlesWidget: (value, meta) {
                     if (value.toInt() >= 0 &&
                         value.toInt() < dailyForecast.length) {
-                      return Text(
-                        DateTimeHelper.formatShortDay(
-                            dailyForecast[value.toInt()].date),
-                        style: TextStyle(
-                          color: textColor.withOpacity(0.6),
-                          fontSize: 12,
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          DateTimeHelper.formatShortDay(
+                              dailyForecast[value.toInt()].date),
+                          style: TextStyle(
+                            color: textColor.withOpacity(0.9),
+                            fontSize: 12,
+                          ),
                         ),
                       );
                     }
@@ -159,7 +168,7 @@ class DailyForecastChart extends StatelessWidget {
         show: true,
         getDotPainter: (spot, percent, barData, index) {
           return FlDotCirclePainter(
-            radius: 4,
+            radius: 5,
             color: color,
             strokeWidth: 2,
             strokeColor: Colors.white,

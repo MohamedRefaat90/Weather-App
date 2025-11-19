@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/location_provider.dart';
 import '../providers/weather_provider.dart';
+import 'glass_widgets.dart';
 
 class SearchOverlay extends StatefulWidget {
   final VoidCallback onClose;
@@ -32,27 +33,14 @@ class _SearchOverlayState extends State<SearchOverlay> {
               tag: 'search-overlay',
               child: Material(
                 color: Colors.transparent,
-                child: Container(
+                child: GlassCard(
                   margin: const EdgeInsets.symmetric(horizontal: 24),
                   padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withOpacity(0.95),
-                        Colors.white.withOpacity(0.9),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 20,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                  ),
+                  gradientColors: [
+                    Colors.white.withOpacity(0.95),
+                    Colors.white.withOpacity(0.9),
+                  ],
+                  borderRadius: 24,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

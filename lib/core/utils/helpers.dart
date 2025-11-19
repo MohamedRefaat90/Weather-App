@@ -127,7 +127,7 @@ class WeatherHelper {
             ]; // Thunderstorm Night - Dark blue-purple
     }
     return isDaytime
-        ? const [Color(0xFFFFA726), Color(0xFFEC407A)]
+        ? const [Color(0xFFFFC837), Color(0xFFFF8008)]
         : const [Color(0xFF455A64), Color(0xFF3F51B5)];
   }
 

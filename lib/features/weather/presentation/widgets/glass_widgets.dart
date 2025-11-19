@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -47,16 +49,20 @@ class GlassCard extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: gradientColors ?? defaultGradient,
+        child: BackdropFilter(
+          filter:
+              ui.ImageFilter.blur(sigmaX: blurStrength, sigmaY: blurStrength),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: gradientColors ?? defaultGradient,
+              ),
             ),
+            padding: padding ?? const EdgeInsets.all(20),
+            child: child,
           ),
-          padding: padding ?? const EdgeInsets.all(20),
-          child: child,
         ),
       ),
     );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/utils/helpers.dart';
 import '../../../domain/entities/weather.dart';
 import '../glass_widgets.dart';
@@ -25,6 +24,10 @@ class DailyForecastList extends StatelessWidget {
         return GlassCard(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           padding: const EdgeInsets.all(16),
+          gradientColors: [
+            Colors.white.withOpacity(0.15),
+            Colors.white.withOpacity(0.05),
+          ],
           child: Row(
             children: [
               // Day
@@ -33,8 +36,7 @@ class DailyForecastList extends StatelessWidget {
                 child: Text(
                   DateTimeHelper.formatDayOfWeek(daily.date),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.backgroundLight),
+                      fontWeight: FontWeight.w600, color: Colors.white),
                 ),
               ),
 
@@ -55,14 +57,13 @@ class DailyForecastList extends StatelessWidget {
                     Text(
                       '${daily.maxTemperature.round()}°',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.backgroundLight),
+                          fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       '${daily.minTemperature.round()}°',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: AppColors.backgroundLight.withOpacity(0.6),
+                            color: Colors.white.withOpacity(0.6),
                           ),
                     ),
                   ],

@@ -17,8 +17,8 @@ class AppColors {
 
   // Gradient Colors
   static const List<Color> sunnyGradient = [
-    Color(0xFFFFA726), // Orange
-    Color(0xFFEC407A), // Pink
+    Color(0xFFFFC837), // Yellow
+    Color(0xFFFF8008), // Orange
   ];
 
   static const List<Color> nightGradient = [

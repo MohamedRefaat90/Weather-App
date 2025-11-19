@@ -16,20 +16,24 @@ class ViewToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Colors.white.withOpacity(0.9);
-
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: 200.ms,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? textColor.withOpacity(0.2) : Colors.transparent,
+          color: isSelected
+              ? Colors.white.withOpacity(0.2)
+              : Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color:
+                isSelected ? Colors.white.withOpacity(0.3) : Colors.transparent,
+          ),
         ),
         child: Icon(
           icon,
-          color: isSelected ? textColor : textColor.withOpacity(0.5),
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
           size: 20,
         ),
       ),

@@ -2,7 +2,7 @@ name: weather
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -12,42 +12,40 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+
   # UI & Icons
   cupertino_icons: ^1.0.8
   lottie: ^3.1.2
-  
+
   # State Management
   provider: ^6.1.2
   equatable: ^2.0.5
-  dartz: ^0.10.1
-  
+
   # Networking
   http: ^1.2.2
-  
+
   # Location Services
   geolocator: ^13.0.2
   geocoding: ^3.0.0
-  
+
   # Storage
   shared_preferences: ^2.3.3
-  
+
   # Charts & Visualization
   fl_chart: ^0.69.0
-  
+
   # UI Components & Utilities
   intl: ^0.19.0
   flutter_animate: ^4.5.0
-  
+
   # Icons & Assets
-  flutter_launcher_icons: ^0.14.1 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: 
-
+  flutter_lints:
+  flutter_launcher_icons: ^0.14.1
 
 flutter_icons:
   android: "launcher_icon"
@@ -67,9 +65,7 @@ flutter_icons:
     generate: true
     image_path: "assets/AppIcon.png"
 
-
 flutter:
-
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
